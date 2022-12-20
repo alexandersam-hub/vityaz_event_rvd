@@ -160,7 +160,7 @@ class GameSocketController{
                                     && this.rooms[messageData.room].session === messageData.session
                                     &&  messageData.userId && messageData.userId >=0 ){
                                     const currentUserId = this.rooms[messageData.room].usersSockets.find(user => user.id === id)
-
+                                    delete(this.rooms[messageData.room].usersSockets.find(user => user.id === id))
                                     if(currentUserId)
                                         this.rooms[messageData.room].id++
                                     else
@@ -236,7 +236,8 @@ class GameSocketController{
                             const message = {
                                 action:'view_answer',
                             }
-                            this.rooms[messageData.room].gameSocket.send(JSON.stringify(message) )
+                            if(this.rooms[messageData.room].gameSocket)
+                                this.rooms[messageData.room].gameSocket.send(JSON.stringify(message) )
                             break
 
 
@@ -244,7 +245,7 @@ class GameSocketController{
                         case 'timer_start':
                             // if (this.rooms[room].currentTimeStamp<=0 || !this.rooms[messageData.room].timerPause)
                             //     this.rooms[room].currentTimeStamp = new Date().valueOf()
-                            console.log('timer_start')
+                            // console.log('timer_start')
                             if( this.rooms[messageData.room].timer)
                                 clearInterval(this.rooms[messageData.room].timer)
                             this.rooms[messageData.room].timerStart = true
@@ -306,8 +307,10 @@ class GameSocketController{
                             const price = this.rooms[room].questions[this.rooms[room].currentTask].price*10
                             let rightAnswerPut = false
                             for (let i of Object.values(this.rooms[messageData.room].score) ){
+
                                 let newScore = 0
                                 if (i.right+i.mistake+(i.players - (i.right+i.mistake))>0)
+                                    // newScore = price
                                     newScore = Math.round(price/(i.right+i.mistake+(i.players - (i.right+i.mistake)))*i.right)
                                 i.current += newScore
                                 if (i.isFirstTrue)
@@ -357,6 +360,7 @@ class GameSocketController{
                             // }
                             // console.log('score',this.rooms[messageData.room].score[room])
                             if (this.rooms[room].questions[this.rooms[room].currentTask].answer.toLowerCase().trim().indexOf(messageData.answer.toLowerCase())>=0){
+                                // console.log('asnwer', messageData.answer)
                                 if(!this.rooms[room].isFirstRightAnswer || this.rooms[room].firstTime  === playerTime){
 
                                     this.rooms[room].isFirstRightAnswer = true
