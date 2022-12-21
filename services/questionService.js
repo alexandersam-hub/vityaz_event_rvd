@@ -21,6 +21,7 @@ class QuestionService{
             // if(index<3)
             // {
                 question.img = question.img.replace('https://quizserver.vityazgroup.ru:8443',  process.env.URL_SERVER)
+                question.img = question.img.replace('https://quizserver.vityazgroup.ru:8500',  process.env.URL_SERVER)
                 questionsDto.push({...new QuestionDto(question)})
                 questionsDto.sort((item, next)=>item.price - next.price)
             // }
